@@ -1,0 +1,162 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Informes</title>
+        <!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>-->
+        <link rel="stylesheet" type="text/css" href="css/main.css"/>
+    </h:head>
+    <h:body>
+        <h:form>
+            <ui:include src=" cabecera.xhtml"/>
+        </h:form>
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row" align="center" >
+                <div id="datagrid" class="ui-grid-col-12">
+        <h:form id="inforForm">
+            <p:selectOneButton  value="#{informesBean.opcion}" style="margin-top:20px">
+                <f:selectItem itemLabel="Informe Compras" itemValue="1" />
+                <f:selectItem itemLabel="Graficos" itemValue="2" />
+                <f:selectItem itemLabel="Codigos" itemValue="3" />
+                <p:ajax event="change" listener="#{informesBean.cargarOpcion()}" update="inforForm"/>
+            </p:selectOneButton>
+            <!--Informes-->
+            <p:outputPanel id="informePanel" rendered="#{informesBean.renderInforme}" style="margin-top:20px">
+                <div id="datagrid" class="ui-grid-col-4 botonWrapper" style="padding-bottom: 2px;padding-top: 2px">
+                    <h:outputText value="Mostrar productos con stock adecuado: " style="position: relative;top: -8px"/>
+                    <p:inputSwitch value="" style="width: 25px">
+                        <p:ajax listener="#{informesBean.recargarInforme()}" update="" />
+                    </p:inputSwitch>
+                </div>
+                
+                <div id="datagrid" class="ui-grid-col-2 botonWrapper" style="padding-bottom: 2px;padding-top: 2px">
+                    <p:selectCheckboxMenu label="Colores" filter="true" filterMatchMode="contains" panelStyle="" scrollHeight="190">
+                        <f:selectItem itemLabel="Sin definir" itemValue="1"/>
+                        <f:selectItems value="#{informesBean.colores}" />
+                    </p:selectCheckboxMenu>
+                </div>
+                
+                <div id="datagrid" class="ui-grid-col-2 botonWrapper" style="padding-bottom: 2px;padding-top: 2px">
+                    <p:selectCheckboxMenu label="Categorias" filter="true" filterMatchMode="contains" panelStyle="" scrollHeight="190">
+                        <f:selectItems value="#{informesBean.categorias}" />
+                    </p:selectCheckboxMenu>
+                        
+                </div>
+                
+                <div id="datagrid" class="ui-grid-col-2 botonWrapper" style="padding-bottom: 2px;padding-top: 2px">
+                    <p:selectCheckboxMenu label="Subcategorias" filter="true" filterMatchMode="contains" panelStyle="" scrollHeight="190">
+                        <f:selectItems value="#{informesBean.subcategorias}" />
+                    </p:selectCheckboxMenu>
+                </div>
+                
+                <div id="datagrid" class="ui-grid-col-2 botonWrapper" style="padding-bottom: 2px;padding-top: 2px">
+                    <p:commandButton value="Imprimir">
+                        <p:printer target="tablainforme" />
+                    </p:commandButton>
+                </div>
+                <div id="datagrid" class="ui-grid-col-12">
+                    <p:dataTable id="tablainforme" value="#{informesBean.listaProductoUltimoHistorico}" var="entrada" style="margin-top: 15px; padding-left: 4px; padding-right: 3px"
+                                paginator="true" paginatorTemplate="Informe Compras" emptyMessage="Ningún Producto" paginatorPosition="top"
+                                currentPageReportTemplate="Mostrando {totalRecords}" stickyHeader="true">
+                        <p:column headerText="Referencia">
+                            <h:outputText value="#{entrada.producto.referencia}" />
+                        </p:column>
+                        <p:column headerText="Descripcion" style="width: 23%">
+                            <h:outputText value="#{entrada.producto.descripcion}" />
+                        </p:column>
+                        <p:column headerText="Precio">
+                            <h:outputText value="#{entrada.producto.precio}" ><f:convertNumber pattern="#0.00 €" locale="eu"/></h:outputText>
+                        </p:column>
+                        <p:column headerText="Uds Caja">
+                            <h:outputText value="#{entrada.producto.piezasCaja}" />
+                        </p:column>
+                        <p:column headerText="Stock Mínimo">
+                            <h:outputText value="#{entrada.producto.stockMin}" />
+                        </p:column>
+                        <p:column headerText="Stock actual">
+                            <h:outputText value="#{entrada.historico.cantidad}" />
+                        </p:column>
+                        <p:column headerText="Cantidad a comprar">
+                            <h:outputText value="#{entrada.cantidadComprar}" />
+                        </p:column>
+                        <p:column headerText="Precio Compra">
+                            <h:outputText value="#{entrada.precioTotalCompra}" ><f:convertNumber pattern="#0.00 €" locale="eu"/></h:outputText>
+                        </p:column>
+                        <p:columnGroup type="footer">
+                            <p:row>
+                                <p:column colspan="7" style="text-align:right" footerText="Total:" />
+                                <p:column footerText="Numerito" />
+                            </p:row>
+                        </p:columnGroup>
+                    </p:dataTable>
+                    
+                </div>
+            </p:outputPanel>
+            <!--Graficos-->
+            <p:outputPanel id="graficoPanel" rendered="#{informesBean.renderGrafico}" style="margin-top:20px">
+                <div id="datagrid" class="ui-grid-col-4">    
+                    <p:selectOneListbox id="listaProductos" value="#{informesBean.referencia}" var="p" filter="true" filterMatchMode="contains" style="width: 95%;">
+                        <p:ajax listener="#{informesBean.cargarGrafico}" update="inforForm:grafico" event="change" />
+                        <f:selectItems value="#{informesBean.productos}" var="prod" itemLabel="#{p.referencia}" itemValue="#{prod}"/>
+                        <p:column>
+                            <h:outputText styleClass="#{informesBean.ultimaCantidadStock(p.referencia)  lt p.stockMin ? 'redFont' : null}" value="#{p.referencia}" />
+                        </p:column>
+                        <p:column>
+                            <h:outputText styleClass="#{informesBean.ultimaCantidadStock(p.referencia)  lt p.stockMin ? 'redFont' : null}" value="#{p.descripcion}" />
+                        </p:column>
+                        <!---->
+                    </p:selectOneListbox>
+                </div>
+                <div id="datagrid" class="ui-grid-col-8">    
+                    <p:chart id ="grafico" type="line" model="#{informesBean.grafico}" style="height:430px;"/>
+                </div>
+            </p:outputPanel>
+            <!--Codigos-->
+            <p:outputPanel id="qrPanel" rendered="#{informesBean.renderQr}" style="margin-top:20px">
+                <p:selectOneRadio id="console" value="#{informesBean.opcionCodigo}">
+                    <p:ajax update="inforForm:tablacodigos"/>
+                    <f:selectItem itemLabel="QR &nbsp; &nbsp; &nbsp; &nbsp;" itemValue="qr" />
+                    <f:selectItem itemLabel="Code 39 &nbsp;" itemValue="code39" />
+                    <f:selectItem itemLabel="Code 128" itemValue="code128" />
+                </p:selectOneRadio>
+                <div id="datagrid" class="ui-grid-col-4">    
+                    <p:selectManyMenu id="listaCodigos" value="#{informesBean.selectedCodigos}" var="p" filter="true" filterMatchMode="contains" showCheckbox="true" style="width: 95%;">
+                        <p:ajax update="inforForm:tablacodigos"/>
+                        <f:selectItems value="#{informesBean.productos}" var="prod" itemLabel="#{prod.referencia}" itemValue="#{prod}" />
+                        <p:column>
+                            <h:outputText value="#{p.referencia}" />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{p.descripcion}" />
+                        </p:column>
+                        <!---->
+                    </p:selectManyMenu>
+                    <!--<p:commandButton value="Cargar" update="inforForm:tablacodigos"  style="margin-top:10px"/>-->
+                    <p:commandButton value="Todos" actionListener="#{informesBean.seleccionarTodos()}" update="inforForm:listaCodigos,inforForm:tablacodigos"  style="margin-top:10px"/>
+                </div>
+                <div id="datagrid" class="ui-grid-col-8">
+                    <p:dataGrid id="tablacodigos" value="#{informesBean.selectedCodigos}" var="codigo" 
+                                paginator="true" paginatorTemplate="{CurrentPageReport} Codigos {Print}" emptyMessage="Selecciona Productos" paginatorPosition="top"
+                                currentPageReportTemplate="Mostrando {totalRecords}">
+                        <f:facet name="{Print}">
+                            <p:commandButton value="Imprimir" type="button" icon="ui-icon-print" style="float: right;margin-top: 4px">
+                                <p:printer target="tablacodigos" />
+                            </p:commandButton>
+                        </f:facet>
+                        <p:barcode value="#{codigo}" height="150px" type="#{informesBean.opcionCodigo}"/>
+                        <br/><p:outputLabel style="text-align: center;vertical-align: middle;" value="#{codigo}"/>
+                        <br/><p:outputLabel style="text-align: center;vertical-align: middle;" value="#{informesBean.leyendasCodigos.get(codigo)}"/>
+                    </p:dataGrid>
+                </div>
+            </p:outputPanel>
+        </h:form>
+                </div>
+            </div>
+        </div>
+    </h:body>
+</html>
+

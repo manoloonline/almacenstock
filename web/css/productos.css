@@ -1,0 +1,33 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 23-nov-2015, 9:17:02
+    Author     : -
+*/
+//Del index
+body {
+    margin: 0px;
+    padding: 0;
+    font-size: 12px;
+    color: #616161;
+}
+
+.authGrid.ui-panelgrid>*>tr,
+.authGrid.ui-panelgrid .ui-panelgrid-cell {
+    border: none;
+}
+
+.ui-selectlistbox-listcontainer{
+    overflow-x:hidden;
+    height: 350px;
+}
+
+//fin del propiedades del index
+
+.ui-datatable-header{
+    display: none !important
+}
+

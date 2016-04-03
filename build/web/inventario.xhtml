@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Inventario</title>
+        <meta name="viewport" 
+      content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
+        <!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+        -->
+        <link rel="stylesheet" type="text/css" href="css/main.css"/>
+        <link rel="stylesheet" type="text/css" href="css/qrreader.css"/>
+
+        <script type="text/javascript">
+            PrimeFaces.locales['es'] = {
+                closeText: 'Cerrar',
+                prevText: 'Anterior',
+                nextText: 'Siguiente',
+                monthNames: ['Enero','Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+                dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+                dayNamesShort: ['Dom','Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+                dayNamesMin: ['D','L','M','X','J','V','S'],
+                weekHeader: 'Semana',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: '',
+                timeOnlyTitle: 'Sólo hora',
+                timeText: 'Tiempo',
+                hourText: 'Hora',
+                minuteText: 'Minuto',
+                secondText: 'Segundo',
+                currentText: 'Fecha actual',
+                ampm: false,
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día',
+                allDayText : 'Todo el día'
+        };
+        </script>
+        <SCRIPT src="lib/llqrcode.js" type="text/javascript"></SCRIPT>
+        <SCRIPT src="lib/webqr.js" type="text/javascript"></SCRIPT>
+        <script language="javascript">
+            window.onload = selectSourceVideo();
+        </script>
+    </h:head>
+    <h:body>
+        
+        <h:form>
+            <ui:include src=" cabecera.xhtml"/>
+        </h:form>
+        <p:growl id="growl" life="3500" />
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row" align="center" >
+                <div id="datagrid" class="ui-grid-col-6">
+            <h:form id="invenForm">
+                
+                <p:panelGrid id ="panelPrinc" styleClass="authGrid" style="border: none;margin-top:20px">
+                    <f:facet name="header">
+                        <p:row>
+                            <p:column colspan="4">Datos</p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column colspan="2">Input</p:column>
+                            <p:column colspan="2">Ultima Entrada</p:column>
+                        </p:row>
+                    </f:facet>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="referencia" style="float: right" value="Referencia:" />
+                        </p:column>
+                        <p:column>
+                            <p:autoComplete id="referencia" value="#{inventarioBean.referencia}" required="true" size="10" maxlength="40" maxResults="6" minQueryLength="1" completeMethod="#{inventarioBean.completarTexto}">
+                                <p:ajax event="blur" listener="#{inventarioBean.recuperar()}" update="invenForm:stock,invenForm:outref,invenForm:outstock,invenForm:outfecha,selectForm:grafico,:imagenInventario"/>
+                                <p:ajax event="itemSelect" listener="#{inventarioBean.recuperar()}" update="invenForm:stock,invenForm:outref,invenForm:outstock,invenForm:outfecha,selectForm:grafico,:imagenInventario"/>
+                            </p:autoComplete>
+                        </p:column>
+                        <!--<p:column>
+                            <p:message for="referencia" display="tooltip"/>
+                        </p:column>-->
+                        <p:column>
+                            <p:outputLabel id="outref" style="float: right;" value="#{inventarioBean.descripcion}"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="stock" style="float: right" value="Stock:" />
+                        </p:column>
+                        <p:column>
+                            <p:spinner id="stock" size="6" min="0" value="#{inventarioBean.stock}"/>
+                        </p:column>
+                        <!--<p:column>
+                            <p:message for="stock" display="tooltip" />
+                        </p:column>-->
+                        <p:column>
+                            <p:outputLabel id="outstock" style="float: right" value="#{inventarioBean.ultimaCantidad}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="fecha" style="float: right" value="Fecha:" />
+                        </p:column>
+                        <p:column>
+                            <p:calendar id="fecha" size="6" value="#{inventarioBean.fecha}" locale="es" navigator="true" pattern="dd/MM/yyyy" mask="true"/>
+                        </p:column>
+                        <!--<p:column>
+                            <p:message for="fecha" display="tooltip" />
+                        </p:column>-->
+                        <p:column>
+                            <p:outputLabel id="outfecha" style="float: right" value="#{inventarioBean.ultimaFecha}"><f:convertDateTime timeZone="CET" pattern="dd/MM/yyyy" /></p:outputLabel>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputText value="" />
+                        </p:column>
+                        <p:column colspan="3">
+                            <p:commandButton actionListener="#{inventarioBean.guardar}" ajax="false" update="invenForm:outref,invenForm:outstock,invenForm:stock,invenForm:outfecha,selectForm:grafico,growl" value="Grabar"/>
+                            <h:outputText value=" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  " />
+                            <p:commandButton actionListener="#{inventarioBean.eliminar}" update="invenForm:outref,invenForm:outstock,invenForm:outfecha,selectForm:grafico,growl" value="Borrar" />               
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+                <p:tooltip />
+            </h:form></div>
+
+            <div class="ui-grid-col-6">
+            
+        <h:form id="selectForm">
+            <p:selectOneButton valueChangeListener="#{inventarioBean.cargarOpcion()}" onchange="submit()" value="#{inventarioBean.opcion}" style="margin-top:20px">
+                <f:selectItem itemLabel="Imagen" itemValue="1" />
+                <f:selectItem itemLabel="Leer QR" itemValue="2" />
+                <f:selectItem itemLabel="Gráfico" itemValue="3" />
+                <!--<p:ajax listener="#{inventarioBean.cargarOpcion()}" update="outHtml"/>-->
+            </p:selectOneButton>    
+            <!--Lector de qr no tocar las imagenes ni nada porque sino no funciona-->
+            <p:chart id ="grafico" rendered="#{inventarioBean.renderGraph}" type="line" model="#{inventarioBean.grafico}" style="height:390px;">
+                <p:ajax event="itemSelect" listener="#{inventarioBean.itemSelect}" update="invenForm:stock,invenForm:fecha,growl" />
+            </p:chart>
+            <p:outputPanel><p:outputLabel id="outHtml" escape="false" value="#{inventarioBean.codigoPanel}"/></p:outputPanel>
+        </h:form>
+        <h:panelGroup id="imagenInventario">
+            <p:graphicImage value="#{inventarioBean.image}" cache="false" rendered="#{inventarioBean.renderImage}" style="padding-top: 10px"/>
+        </h:panelGroup>
+        </div>
+        </div>
+        </div>
+        <!--<p:chart type="line" model="#" style="height:400px;" responsive="true"/>-->
+    </h:body>
+</html>
+

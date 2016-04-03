@@ -1,0 +1,353 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Productos</title>
+        <!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>-->
+        <link rel="stylesheet" type="text/css" href="css/productos.css"/>
+        <link rel="stylesheet" type="text/css" href="css/main.css"/>
+        <!--<script src="lib/jquery-1.11.3.min.js"/>-->
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <ui:include src=" cabecera.xhtml"/> 
+
+        <p:growl id="msgs" showDetail="true"/>
+        </h:form>
+        <p:overlayPanel id="nuevoPanel" for=":mainform:nuevoBtn" showEffect="fade" hideEffect="fade" dismissable="false" dynamic="true" style="width: min-content; position: absolute; top:0px;right: 0px">
+            <h:form id="nuevoForm">
+                <p:panelGrid styleClass="authGrid" columns="2" style="border: none">
+                    <p:outputLabel for="referencia" style="float: right" value="Referencia:" /> <p:inputText id="referencia" value="#{ejemploBean.nuevo.referencia}" required="true" maxlength="40"></p:inputText>
+                    <p:outputLabel for="descripcion" style="float: right" value="Descripción:" /> <p:inputTextarea id="descripcion" value="#{ejemploBean.nuevo.descripcion}" maxlength="255"/>
+                    <p:outputLabel for="stockmin" style="float: right" value="Stock Mínimo:" /> <p:spinner id="stockmin" min="0" value="#{ejemploBean.nuevo.stockMin}" size="9"/>
+                    <p:outputLabel for="piezascaja" style="float: right" value="Piezas Caja:" /> <p:spinner id="piezascaja" min="1" value="#{ejemploBean.nuevo.piezasCaja}" size="9"/>
+                    <p:outputLabel for="precio" style="float: right" value="Precio:" /> <p:spinner id="precio" stepFactor="0.01" prefix="€" min="0" value="#{ejemploBean.nuevo.precio}" size="9"/>
+                    <p:outputLabel for="color" style="float: right" value="Color:" /> 
+                    <p:selectOneMenu id="color" label="Colores" required="true" value="#{ejemploBean.nuevo.color.id}">
+                        <f:selectItem itemLabel="Selecciona uno" itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItem itemLabel="Sin definir" itemValue="1"/>
+                        <f:selectItems value="#{ejemploBean.colores}" />
+                    </p:selectOneMenu> 
+                    
+                    <p:outputLabel for="subcategoria" style="float: right" value="Subcategoria:" /> 
+                    <p:selectOneMenu  id="subcategoria" required="true" label="subcategoria" value="#{ejemploBean.nuevo.subcategoria.id}" style="width: 146px">
+                        <f:selectItem itemLabel="Selecciona uno" itemValue="#{null}" noSelectionOption="true"  />
+                        <f:selectItems value="#{ejemploBean.categoriasGroup}"  />
+                    </p:selectOneMenu>
+                    
+                    <h:outputText value="" /><p:commandButton action="#{ejemploBean.crearProducto()}" value="Añadir" update="nuevoForm,:mainform:productos,:mainform:columnToggler" style="margin-bottom: 10px"/>
+                </p:panelGrid>
+                <p:tooltip />
+            </h:form> 
+        </p:overlayPanel>
+        <p:overlayPanel id="colorPanel" for=":mainform:colorBtn" showEffect="fade" hideEffect="fade" dismissable="false" dynamic="true" style="width: min-content; position: absolute; top:0px;right: 0px">
+            <h:form id="crearColorForm">
+                <p:panelGrid id="crearColorPanel" styleClass="authGrid" style="border: none">  
+                    <p:row>
+                        <p:column><p:outputLabel for="nombre" style="float: right; width:50px" value="Nuevo color:" /></p:column> 
+                        <p:column><p:inputText id="nombre" value="#{ejemploBean.nuevoColor.nombre}" required="true" size="15" maxlength="40"></p:inputText></p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column></p:column>
+                        <p:column><p:commandButton action="#{ejemploBean.crearColor()}" value="Añadir" update="crearColorForm:nombre,eliminarColorForm:color,:mainform:productos,:nuevoForm:color,:mainform:columnToggler" /></p:column>
+                    </p:row>
+                </p:panelGrid>
+            </h:form>
+            <p:separator/>
+            <h:form id="eliminarColorForm">
+                <p:panelGrid id="eliminarColorPanel" styleClass="authGrid" style="border: none">
+                    <p:row>
+                        <p:column ><p:outputLabel for="color" style="float: right; width:50px " value="Color:" /> </p:column>
+                        <p:column><p:selectOneMenu id="color" required="true" label="Colores" value="#{ejemploBean.eliminarColor.id}">
+                            <f:selectItem itemLabel="Selecciona uno" itemValue="#{null}" noSelectionOption="true" />
+                            <f:selectItems value="#{ejemploBean.colores}" />
+                        </p:selectOneMenu>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column/>
+                        <p:column><p:commandButton action="#{ejemploBean.eliminarColor()}" value="Eliminar" update="eliminarColorForm:color,:mainform:productos,:nuevoForm:color,:mainform:columnToggler,:nuevoForm:color" style="margin-bottom: 10px">
+                            <p:confirm header="Eliminar color" message="¿Estas seguro?" icon="ui-icon-alert"/>
+                        </p:commandButton></p:column>
+                    </p:row>    
+                </p:panelGrid>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" style="margin-left: 15px"/>
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" style="float: right"/>
+                </p:confirmDialog>
+            </h:form>
+        </p:overlayPanel>
+        
+        
+        <p:overlayPanel id="categoriaPanel" for=":mainform:categoriaBtn" dismissable="false" showEffect="fade" hideEffect="fade" dynamic="true" style="width: max-content; position: absolute; top:0px;right: 0px">
+            <h:form id="nuevaCategoriaForm">
+                <p:panelGrid styleClass="authGrid" style="border: none">
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="nombreCat" style="float: right; width:80px " value="Nueva categoria:" />
+                        </p:column>
+                        <p:column> 
+                            <p:inputText id="nombreCat" value="#{ejemploBean.nuevaCategoria.nombre}" required="true" size="15" maxlength="40"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column/>
+                        <p:column>
+                            <p:commandButton action="#{ejemploBean.crearCategoria()}" value="Añadir" update=":eliminarCategoriaForm:elimCategoria,:eliminarSubcategoriaForm:elimSubcategoria,:nuevoForm:subcategoria,:mainform:productos,:mainform:columnToggler,:nuevaCategoriaForm:nombreCat"/>
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+            </h:form>
+            <p:separator/>
+            <h:form id="nuevaSubcategoriaForm">
+                <p:panelGrid styleClass="authGrid" style="border: none">
+                    <p:row>
+                        <p:column><p:outputLabel for="nombreSubcat" style="float: right; width:80px " value="Nueva subcategoria:" /></p:column>
+                        <p:column><p:inputText id="nombreSubcat" value="#{ejemploBean.nuevaSubcategoria.nombre}" required="true" size="15" maxlength="40"/></p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="categoria" style="float: right; width:80px " value="Categoria:" /> 
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu  id="categoria" required="true" label="categoria" value="#{ejemploBean.nuevaSubcategoria.categoriaPadreRelacionada.id}" style="width: 146px">
+                                <f:selectItem itemLabel="Selecciona uno" itemValue="#{null}" noSelectionOption="true" />
+                                <f:selectItems value="#{ejemploBean.categorias}"  />
+                            </p:selectOneMenu>
+                        </p:column>  
+                    </p:row>
+                    <p:row>
+                        <p:column/>
+                        <p:column>
+                            <p:commandButton action="#{ejemploBean.crearSubcategoria()}" value="Añadir" update=":eliminarCategoriaForm:elimCategoria,:eliminarSubcategoriaForm:elimSubcategoria,:nuevoForm:subcategoria,:mainform:productos,:mainform:columnToggler,:nuevaSubcategoriaForm:nombreSubcat,:nuevaSubcategoriaForm:categoria"/>
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+            </h:form>
+            <p:separator/>
+            <h:form id="eliminarCategoriaForm">
+                <p:panelGrid styleClass="authGrid" style="border: none">
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="elimCategoria" style="float: right; width:80px " value="Categoria:" /> 
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu  id="elimCategoria" required="true" label="elimCategoria" value="#{ejemploBean.eliminarCategoria.id}" style="width: 146px">
+                                <f:selectItem itemLabel="Selecciona uno" itemValue="#{null}" noSelectionOption="true" />
+                                <f:selectItems value="#{ejemploBean.categorias}"  />
+                            </p:selectOneMenu>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column/>
+                        <p:column>
+                            <p:commandButton action="#{ejemploBean.eliminarCategoria()}" value="Eliminar" update=":eliminarCategoriaForm:elimCategoria,:eliminarSubcategoriaForm:elimSubcategoria,:nuevoForm:subcategoria,:mainform:productos,:mainform:columnToggler">
+                                <p:confirm header="Eliminar categoria" message="¿Estas seguro?" icon="ui-icon-alert"/>
+                            </p:commandButton>
+                        </p:column>    
+                    </p:row>
+                </p:panelGrid>
+            </h:form>
+            <p:separator/>
+            <h:form id="eliminarSubcategoriaForm">
+                <p:panelGrid styleClass="authGrid" style="border: none">
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="elimSubcategoria" style="float: right; width:80px " value="Subcategoria:" /> 
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu  id="elimSubcategoria" required="true" label="elimSubcategoria" value="#{ejemploBean.eliminarSubcategoria.id}" style="width: 146px">
+                                <f:selectItem itemLabel="Selecciona uno" itemValue="#{null}" noSelectionOption="true" />
+                                <f:selectItems value="#{ejemploBean.categoriasGroup}"  />
+                            </p:selectOneMenu>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column/>
+                        <p:column>
+                            <p:commandButton action="#{ejemploBean.eliminarSubcategoria()}" value="Eliminar" update=":eliminarCategoriaForm:elimCategoria,:eliminarSubcategoriaForm:elimSubcategoria,:nuevoForm:subcategoria,:mainform:productos,:mainform:columnToggler" style="margin-bottom: 10px">
+                                <p:confirm header="Eliminar subcategoria" message="¿Estas seguro?" icon="ui-icon-alert"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+            </h:form>
+        </p:overlayPanel>
+        <h:form id="mainform" prependId="false">
+            <script>
+                function searchKeyPressedHandler() {                
+                  jQuery(document).delegate("#searchFilter input","keyup", function (event) {
+                    // alert('searchValue');
+                    var searchValue = document.getElementById('searchFilter_text').value;                
+                    $("#productos\\:globalFilter").val(searchValue);
+                    $("#productos\\:globalFilter").trigger('keyup');   
+                  });
+                }
+                searchKeyPressedHandler();
+              </script> 
+            
+            <div style="text-align: center; margin-top: 10px; margin-bottom: 10px">
+                    <p:commandButton id="nuevoBtn" class="botonesheader" type="button" value="Nuevo" icon="ui-icon-plus"/>
+                    <p:commandButton id="eliminarBtn" class="botonesheader" action="#{ejemploBean.eliminarProductos()}" value="Eliminar" icon="ui-icon-trash">
+                         <p:confirm header="Eliminar productos" message="¿Estas seguro?" icon="ui-icon-alert"/>
+                    </p:commandButton>
+
+                    <p:commandButton id="colorBtn" class="botonesheader" type="button" value="Colores" icon="ui-icon-pencil"/>
+                    <p:commandButton id="categoriaBtn" class="botonesheader" type="button" value="Categorías" icon="ui-icon-pencil"/>    
+                    <p:commandButton class="botonesheader" id="toggler" type="button" value="Columnas" icon="ui-icon-calculator" style=""/>
+                    <!--<p:inputText class="botonesheader" id="globalFilter" onkeyup="PF('productosTable').filter()"  style="width: 12%; min-width: 80px" placeholder="Buscar..."/>-->
+                    <p:outputPanel  id="searchFilter" style="width: 10%; min-width: 60px; display: inline">  
+                        <p:inputText  class="botonesheader"  id="searchFilter_text" style="width: 10%;" placeholder="Buscar..." />  
+                    </p:outputPanel>  
+                    <p:columnToggler id="columnToggler" datasource="productos" trigger="toggler"/>
+                    <p:commandButton class="botonesheader" id="nada" type="button" value="Nada" rendered="false"/>
+                    <p:defaultCommand target="dummy"/>
+                    <p:commandButton id="dummy" process="@none" global="false" style="display:none;"/>
+            </div>        
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" style="margin-left: 15px"/>
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" style="float: right"/>
+                    </p:confirmDialog>
+                    
+            
+        <p:dataTable id="productos" var="prod" value="#{ejemploBean.lista}" widgetVar="productosTable" rows="15" draggableColumns="true" paginator="true" editable="true" editMode="cell" filteredValue="#{ejemploBean.listaFiltro}" style="padding-left: 4px; padding-right: 3px"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
+                         rowsPerPageTemplate="5,10,15,25,50" emptyMessage="No hay resgistros" paginatorPosition="bottom" rowIndexVar="indexProduct"
+                         currentPageReportTemplate="Mostrando {startRecord}-{endRecord} de {totalRecords}">
+
+            <p:ajax event="cellEdit" listener="#{ejemploBean.onCellEdit}" update=":form:msgs" />
+            
+            <f:facet id="cabecera" name="header">
+                <p:outputPanel style="display:none" >  
+                    <p:inputText class="botonesheader" id="globalFilter" onkeyup="PF('productosTable').filter()"  style="width: 12%; min-width: 80px" placeholder="Buscar..."/>
+                </p:outputPanel>
+            </f:facet>
+            <f:facet name="{Exporters}">
+                <h:commandLink>
+                    <p:graphicImage value="images/xml.png" width="24"/>
+                    <p:dataExporter type="xml" target="productos" fileName="productos" />
+                </h:commandLink>
+                
+                <h:commandLink>
+                    <p:graphicImage value="images/csv.png" width="24"/>
+                    <p:dataExporter type="csv" target="productos" fileName="productos" />
+                </h:commandLink>
+ 
+                <h:commandLink>
+                    <p:graphicImage value="images/pdf.png" width="24"/>
+                    <p:dataExporter type="pdf" target="productos" fileName="productos"/>
+                </h:commandLink>
+ 
+                <h:commandLink>
+                    <p:graphicImage value="images/xls.png" width="24"/>
+                    <p:dataExporter type="xls" target="productos" fileName="productos" />
+                </h:commandLink>
+                
+            </f:facet>
+            <p:column toggleable="false" style="width:18px" exportable="false">
+                <p:selectBooleanCheckbox value="#{prod.seleccionado}"/>
+            </p:column>
+            <p:column sortBy="#{prod.producto.referencia}" filterBy="#{prod.producto.referencia}" filterMatchMode="contains">
+                <f:facet name="header">Referencia</f:facet> 
+                <p:cellEditor>
+                    <f:facet name="output"><h:outputText value="#{prod.producto.referencia}"/></f:facet>
+                    <f:facet name="input"><p:inputText id="modelInput" value="#{prod.producto.referencia}" style="width:94%" maxlength="40"/></f:facet>
+                </p:cellEditor>
+            </p:column>
+            <p:column width="30%" sortBy="#{prod.producto.descripcion}" filterBy="#{prod.producto.descripcion}" filterMatchMode="contains">
+                <f:facet name="header">Descripcion</f:facet> 
+                <p:cellEditor>
+                    <f:facet name="output"><h:outputText value="#{prod.producto.descripcion}"/></f:facet>
+                    <f:facet name="input"><p:inputText value="#{prod.producto.descripcion}" style="width:98%" label="Descripcion" maxlength="255"/></f:facet>
+                </p:cellEditor>
+            </p:column>
+            <p:column sortBy="#{prod.producto.stockMin}"  filterBy="#{prod.producto.stockMin}" filterMatchMode="exact">
+                <f:facet name="header">Stock Min</f:facet>
+                <p:cellEditor>
+                    <f:facet name="output"><h:outputText value="#{prod.producto.stockMin}"/></f:facet>
+                    <f:facet name="input"><p:spinner size="6" min="0" value="#{prod.producto.stockMin}" label="StockMin"/></f:facet>
+                </p:cellEditor>
+            </p:column>
+            <p:column sortBy="#{prod.producto.piezasCaja}"  filterBy="#{prod.producto.piezasCaja}" filterMatchMode="exact">
+                <f:facet name="header">Piezas Caja</f:facet>
+                <p:cellEditor>
+                    <f:facet name="output"><h:outputText value="#{prod.producto.piezasCaja}"/></f:facet>
+                    <f:facet name="input"><p:spinner size="6" min="1" value="#{prod.producto.piezasCaja}"  label="PiezasCaja"/></f:facet>
+                </p:cellEditor>
+            </p:column>
+            <p:column sortBy="#{prod.producto.precio}" filterBy="#{prod.producto.precio}" filterMatchMode="contains">
+                <f:facet name="header">Precio</f:facet> 
+                <p:cellEditor>
+                    <f:facet name="output"><h:outputText value="#{prod.producto.precio}"><f:convertNumber pattern="#0.00 €" locale="eu"/></h:outputText></f:facet>
+                    <f:facet name="input"><p:spinner size="6" min="0" stepFactor="0.01" prefix="€" value="#{prod.producto.precio}"  label="Precio"/></f:facet>
+                </p:cellEditor>
+            </p:column>
+            <p:column id="color" filterBy="#{prod.producto.color.nombre}" filterMatchMode="in" sortBy="#{prod.producto.color.nombre}">
+                <f:facet name="header">Color</f:facet>
+                <p:cellEditor>
+                    <f:facet id="colorOut" name="output"><h:outputText value="#{prod.producto.color.nombre}"/></f:facet>
+                    <f:facet id="colorIn" name="input" >
+                        <p:selectOneMenu  label="Color"  style="width: 146px">
+                            <f:selectItem itemLabel="Sin definir" itemValue="1"/>
+                            <f:selectItems value="#{ejemploBean.colores}"  />
+                        </p:selectOneMenu>
+                    </f:facet>
+                </p:cellEditor>
+                <f:facet name="filter">
+                    <p:selectCheckboxMenu label="Colores" onchange="PF('productosTable').filter()" panelStyle="width:200px" scrollHeight="190"> 
+                        <f:selectItem itemLabel="Sin definir" itemValue="1"/>
+                        <f:selectItems value="#{ejemploBean.colores}" />
+                    </p:selectCheckboxMenu>
+                </f:facet>
+            </p:column>
+            <p:column id="Subcategoria" filterBy="#{prod.producto.subcategoria.nombre}" filterMatchMode="contains" sortBy="#{prod.producto.subcategoria.nombre}">
+                <f:facet name="header">Subcategoria</f:facet>
+                <!--<f:facet name="filter">
+                    <p:selectCheckboxMenu label="Subcategorias" onchange="PF('productosTable').filter()" panelStyle="width:200px" scrollHeight="190">
+                        <f:selectItems value="#{ejemploBean.subcategorias}" />
+                    </p:selectCheckboxMenu>
+                    <p:selectOneMenu onchange="PF('productosTable').filter()" panelStyle="" >
+                        <f:selectItem itemLabel="Selecciona uno" itemValue="#{null}" noSelectionOption="true"  />
+                        <f:selectItems value="#{ejemploBean.categoriasGroup}"  />
+                    </p:selectOneMenu> 
+                </f:facet>-->
+                <p:cellEditor>
+                    <f:facet name="output"><h:outputText value="#{prod.producto.subcategoria.nombre}"/></f:facet>
+                    <f:facet name="input" >
+                        <p:selectOneMenu  label="Subcategoria"  style="width: 146px">
+                            <f:selectItems value="#{ejemploBean.categoriasGroup}"  />
+                        </p:selectOneMenu>
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+            <p:column id="Imagen" style="width:28px">
+                <p:commandButton id="imagenBtn" type="button" icon="ui-icon-image">
+                    <p:overlayPanel id="imagenPanel" for="imagenBtn" showEffect="fade" hideEffect="fade" dynamic="true" style="width: 321px; position: absolute; top:0px;right: 0px" >
+                        <h:form enctype="multipart/form-data">
+                            <h:panelGroup id="uploadContainer">
+                                <p:fileUpload fileUploadListener="#{ejemploBean.upload}" mode="advanced" dragDropSupport="true" 
+                                              update="messages productos:#{indexProduct}:imgPanel uploadContainer" sizeLimit="2000000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                              label="Imagen" cancelLabel="Cancelar" uploadLabel="Grabar">
+                                    <f:attribute name="refProd" value="#{prod.producto.referencia}" />
+                                </p:fileUpload>
+                            </h:panelGroup>
+
+                            <p:growl id="messages" showDetail="true" />
+                        </h:form>
+                    </p:overlayPanel>
+                    <p:overlayPanel id="imgPanel" for="imagenBtn" showEffect="fade" hideEffect="fade" showEvent="mouseenter" hideEvent="mouseleave" style="width: min-content; position: absolute; top:0px;right: 0px">
+                        <p:graphicImage value="#{ejemploBean.image}" cache="false">
+                            <f:param name="id" value="#{prod.producto.referencia}" />
+                        </p:graphicImage>
+                    </p:overlayPanel>
+                </p:commandButton>
+            </p:column>
+        </p:dataTable>
+        </h:form>
+    </h:body>
+</html>
+

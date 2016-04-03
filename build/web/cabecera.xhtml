@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:body>
+        <ui:composition>
+        <script type="text/javascript">
+            history.pushState("", "", "#{request.contextPath}/");
+        </script>
+        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" showEffect="fade">
+            <img src="images/ajaxloadingbar.gif" /><br/>
+            <div style="text-align: center">
+                <p:outputLabel value="Cargando..." />
+            </div>
+        </p:dialog>
+            <nav> 
+                <p:tabMenu activeIndex="#{param.i}" style="">
+                    <p:menuitem value="Inicio" action="#{loginBean.entrar()}" icon="ui-icon-home">
+                        <f:param name="i" value="0" />
+                    </p:menuitem>
+                    <p:menuitem value="Inventario" action="#{cabeceraBean.toInventario()}" icon="ui-icon-search">
+                        <f:param name="i" value="1" />
+                    </p:menuitem>
+                    <p:menuitem value="Productos" action="#{cabeceraBean.toProductos()}" icon="ui-icon-note">
+                        <f:param name="i" value="2" />
+                    </p:menuitem>
+                    <p:menuitem value="Informes" action="#{cabeceraBean.toInformes()}" icon="ui-icon-document">
+                        <f:param name="i" value="3" />
+                    </p:menuitem>
+                    <p:menuitem value="Opciones" action="#{cabeceraBean.toOpciones()}" icon="ui-icon-wrench">
+                        <f:param name="i" value="4" />
+                    </p:menuitem>
+                </p:tabMenu>
+            </nav>
+            <nav style="position: absolute; right: 10px; top: 12px">
+                <p:outputLabel value="Hola #{cabeceraBean.usuario}"/>! <p:commandLink action="#{cabeceraBean.desconectar()}" value="Desconectar"/>
+            </nav>
+        </ui:composition>
+    </h:body>
+</html>

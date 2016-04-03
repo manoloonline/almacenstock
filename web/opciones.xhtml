@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Opciones</title>
+        <meta name="viewport" 
+      content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
+        <link rel="stylesheet" type="text/css" href="css/main.css"/>
+    </h:head>
+    <h:body id="raiz">
+        <h:form >
+        <ui:include src="cabecera.xhtml">
+            <!--<ui:param id="i" name="param.i" value="4"/>-->
+        </ui:include>
+        </h:form>
+        <center>            
+        <h:form id="opcionesForm1">    
+            <br/>
+            <p:panelGrid styleClass="genGrid" columns="2" style="">
+                <p:outputLabel for="usuario" style="text-align: right;width: 150px" value="Usuario:" /> <p:inputText id="usuario" value="#{opcionesBean.usuario}" required="true" />
+                <p:outputLabel for="email" style="text-align: right;width: 150px" value="Email" /> <p:inputText id="email" value="#{opcionesBean.email}" required="true"/>
+                
+                <br/><p:commandButton action="#{opcionesBean.guardarDatos()}" value="Guardar"/>
+            
+            </p:panelGrid>    
+        </h:form>
+        <br/>
+            <h:form id="opcionesForm2">
+                <p:panelGrid styleClass="genGrid" columns="2" style="">
+                    <p:outputLabel for="cAnt" value="Contraseña antigua:" style="text-align: right;width: 150px"/> <p:password id="cAnt" redisplay="true" value="#{opcionesBean.contrasenaAnt}" required="true"/>
+                    <p:outputLabel for="cNueva" value="Contraseña nueva:" style="text-align: right;width: 150px"/> <p:password id="cNueva" redisplay="true" value="#{opcionesBean.contrasenaNueva}" required="true" feedback="true" inline="true"><f:validateLength minimum="6"/></p:password>
+                    <p:outputLabel for="cNueva2" value="Repite contraseña:" style="text-align: right;width: 150px"/> <p:password id="cNueva2" redisplay="true" value="#{opcionesBean.repiteContrasena}" required="true"/>
+                    <br/><p:commandButton value="Cambiar"/>
+                </p:panelGrid>
+            </h:form>
+        <br/>
+            <h:form id="opcionesForm3">
+                
+                <p:panelGrid styleClass="genGrid" columns="2" style="">
+                
+                <p:outputLabel for="elegirTema" style="text-align: right;width: 150px" value="Tema de fondo:" />
+                <p:selectOneMenu id="elegirTema" value="#{opcionesBean.tema}" panelStyle="width:180px" 
+                                 effect="fade" var="t" style="width:160px" filter="true" filterMatchMode="startsWith">
+                    <f:selectItems value="#{opcionesBean.themes}" var="theme" itemLabel="#{theme.displayName}" itemValue="#{theme}" />
+
+                    <p:column style="width:10%">
+                        <h:outputText styleClass="ui-theme ui-theme-#{t.name}" />
+                    </p:column>
+
+                    <p:column>
+                        <h:outputText value="#{t.displayName}" />
+                    </p:column>
+                </p:selectOneMenu>
+                
+                <h:outputText value="" /><p:commandButton action="#{opcionesBean.aplicarTema()}" ajax="false" value="Aplicar"/>
+            </p:panelGrid>
+            
+        </h:form>
+        </center>
+    </h:body>
+</html>
+

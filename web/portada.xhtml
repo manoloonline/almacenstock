@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:body>
+        <ui:composition template="/template/principalLayout.xhtml">
+            <ui:define name="content">
+                <h:form>
+                    <p:growl id="msgs" showDetail="true" />
+                    <p:dashboard id="p" model="#{portadaBean.model}">
+                        <p:ajax event="reorder" listener="#{portadaBean.handleReorder}" update="msgs" />
+
+                        <p:panel id="sports" header="Grafico">
+                            <h:outputText value="Imagen graficos" />
+                        </p:panel>
+
+                        <p:panel id="finance" header="Productos">
+                            <h:outputText value="Productos sin stock" />
+                        </p:panel>
+
+                        <p:panel id="lifestyle" header="Cosas varias">
+                            <h:outputText value="A definir"  />
+                        </p:panel>
+
+                        <p:panel id="weather" header="Posibles imagenes">
+                            <h:outputText value="Imagenes contenidos" />
+                        </p:panel>
+
+                        <p:panel id="politics" header="Otra">
+                            <h:outputText value="Otro contenido" />
+                        </p:panel>
+                    </p:dashboard>
+                    <div style="clear:both" />        
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
