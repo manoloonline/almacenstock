@@ -65,14 +65,25 @@
         </p:overlayPanel>
         <p:growl id="msgs" globalOnly="true" autoUpdate="true"/>
         <p:notificationBar position="bottom" effect="slide" styleClass="cookieBar" widgetVar="bar">
-            <h:outputText value="Sabemos que es una obviedad pero esta pagina utiliza cookies y es nuestra obligación advertirte de ello, si continuas navegando aceptas nuestras " />
+            <h:outputText value="Sabemos que es una obviedad pero esta pagina utiliza cookies de terceros y es nuestra obligación advertirte de ello, si continuas navegando aceptas nuestras " />
             <p:link href="/" value="condiciones de uso"  />
-            <div style="float: right; margin-right: 20px"><i class="fa fa-close fa-lg"/></div>
+            <div style="float: right; margin-right: 20px">
+                <p:link>
+                    <i onclick="closeCookies();" class="fa fa-close fa-lg"/>
+                </p:link>
+            </div>
         </p:notificationBar>
           <script>
-            setTimeout(function(){
-              PF('bar').show();
-            }, 2000);
+            history.pushState("", "", "#{request.contextPath}/");
+            if(document.cookie.indexOf('cookies=1')=== -1){
+                setTimeout(function(){
+                  PF('bar').show();
+                }, 2000);
+            }
+            function closeCookies(){
+                PF('bar').hide();
+                document.cookie = "cookies=1";
+            }
           </script>
     </h:body>
 </html>

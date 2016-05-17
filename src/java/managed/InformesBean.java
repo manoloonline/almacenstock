@@ -54,6 +54,7 @@ public class InformesBean implements Serializable{
     private List<SelectItem> colores;
     private List<SelectItem> subcategorias;
     private List<SelectItem> categorias;
+    private boolean mostrarCorrecta;
     
     
     @ManagedProperty("#{loginBean}")
@@ -76,6 +77,7 @@ public class InformesBean implements Serializable{
         ordenarProductos();
         this.crearGrafico(null);
         opcionCodigo="qr";
+        mostrarCorrecta = false;
         colores = gs.obtenerColores(loginBean.getU().getId());
         subcategorias = gs.obtenerSubcategorias(loginBean.getU().getId());
         categorias = gs.obtenerCategorias(loginBean.getU().getId());
@@ -227,6 +229,15 @@ public class InformesBean implements Serializable{
     public void setLeyendasCodigos(HashMap leyendasCodigos) {
         this.leyendasCodigos = leyendasCodigos;
     }
+
+    public boolean isMostrarCorrecta() {
+        return mostrarCorrecta;
+    }
+
+    public void setMostrarCorrecta(boolean mostrarCorrecta) {
+        this.mostrarCorrecta = mostrarCorrecta;
+    }
+    
     
     
     public void ordenarProductos(){

@@ -144,7 +144,7 @@ public class LoginBean implements Serializable{
         }
         FacesContext.getCurrentInstance()
             .getExternalContext()
-            .addResponseCookie("dontShowCookies", "true", properties);
+            .addResponseCookie("cookies", "1", properties);
     }
     
     private void cargarValorCookies(){
