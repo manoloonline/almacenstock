@@ -13,8 +13,9 @@
         <!--<script src="lib/jquery-1.11.3.min.js"/>-->
     </h:head>
     <h:body>
+     <ui:composition template="/template/principalLayout.xhtml">
+       <ui:define name="content">
         <h:form id="form">
-            <ui:include src=" cabecera.xhtml"/> 
 
         <p:growl id="msgs" showDetail="true"/>
         </h:form>
@@ -348,6 +349,8 @@
             </p:column>
         </p:dataTable>
         </h:form>
+       </ui:define>
+      </ui:composition>
     </h:body>
 </html>
 

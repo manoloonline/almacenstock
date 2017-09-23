@@ -11,9 +11,8 @@
         <link rel="stylesheet" type="text/css" href="css/main.css"/>
     </h:head>
     <h:body>
-        <h:form>
-            <ui:include src=" cabecera.xhtml"/>
-        </h:form>
+     <ui:composition template="/template/principalLayout.xhtml">
+       <ui:define name="content">
         <div class="ui-grid ui-grid-responsive">
             <div class="ui-grid-row" align="center" >
                 <div id="datagrid" class="ui-grid-col-12">
@@ -62,7 +61,7 @@
                     <p:dataTable id="tablainforme" value="#{informesBean.listaProductoUltimoHistorico}" var="entrada" style="margin-top: 15px; padding-left: 4px; padding-right: 3px"
                                 paginator="true" paginatorTemplate="Informe Compras" emptyMessage="Ningún Producto" paginatorPosition="top"
                                 currentPageReportTemplate="Mostrando {totalRecords}"  stickyHeader="true"  >
-                        <p:column headerText="Referencia" rendered="#{entrada.cantidadComprar != 0 and !informesBean.mostrarCorrecta}">
+                        <p:column headerText="Referencia" rendered="#{!informesBean.mostrarCorrecta}">
                             <h:outputText value="#{entrada.producto.referencia}" />
                         </p:column>
                         <p:column headerText="Descripcion" style="width: 23%">
@@ -89,7 +88,7 @@
                         <p:columnGroup type="footer">
                             <p:row>
                                 <p:column colspan="7" style="text-align:right" footerText="Total:" />
-                                <p:column footerText="Numerito" />
+                                <p:column footerText="#{informesBean.sumaTotalPrecios} €" />
                             </p:row>
                         </p:columnGroup>
                     </p:dataTable>
@@ -157,6 +156,8 @@
                 </div>
             </div>
         </div>
+       </ui:define>
+      </ui:composition>
     </h:body>
 </html>
 

@@ -103,11 +103,14 @@ function htmlEntities(str) {
 
 function read(a)
 {
-    //document.getElementById("result").innerHTML=a;
+    var html="<br>";
+    if(a.indexOf("http://") === 0 || a.indexOf("https://") === 0)
+        html+="<a target='_blank' href='"+a+"'>"+a+"</a><br>";
+    html+="<b>"+htmlEntities(a)+"</b><br><br>";
+    //document.getElementById("result").innerHTML=html;
     document.getElementById("invenForm:referencia_input").value = a;
     document.getElementById("invenForm:referencia_input").focus();
     document.getElementById("invenForm:stock_input").select();
-    ;
 }	
 
 function isCanvasSupported(){
@@ -116,7 +119,7 @@ function isCanvasSupported(){
 }
 function success(stream) {
     if(webkit)
-        v.src = window.webkitURL.createObjectURL(stream);
+        v.src = window.URL.createObjectURL(stream);
     else
     if(moz)
     {
@@ -132,6 +135,95 @@ function success(stream) {
 function error(error) {
     gUM=false;
     return;
+}
+
+
+
+function setwebcam()
+{
+	
+	var options = true;
+	if(navigator.mediaDevices && navigator.mediaDevices.enumerateDevices)
+	{
+		try{
+			navigator.mediaDevices.enumerateDevices()
+			.then(function(devices) {
+			  devices.forEach(function(device) {
+				if (device.kind === 'videoinput') {
+				  if(device.label.toLowerCase().search("back") >-1)
+					options={'deviceId': {'exact':device.deviceId}, 'facingMode':'environment'} ;
+				}
+				console.log(device.kind + ": " + device.label +" id = " + device.deviceId);
+			  });
+			  setwebcam2(options);
+			});
+		}
+		catch(e)
+		{
+			console.log(e);
+		}
+	}
+	else{
+		console.log("no navigator.mediaDevices.enumerateDevices" );
+		setwebcam2(options);
+	}
+	
+}
+
+function setwebcam2(options)
+{
+	console.log(options);
+	//document.getElementById("result").innerHTML="- scanning -";
+    if(stype==1)
+    {
+        setTimeout(captureToCanvas, 500);    
+        return;
+    }
+    var n=navigator;
+    document.getElementById("outdiv").innerHTML = vidhtml;
+    v=document.getElementById("v");
+
+
+    if(n.getUserMedia)
+	{
+		webkit=true;
+        n.getUserMedia({video: options, audio: false}, success, error);
+	}
+    else
+    if(n.webkitGetUserMedia)
+    {
+        webkit=true;
+        n.webkitGetUserMedia({video:options, audio: false}, success, error);
+    }
+    else
+    if(n.mozGetUserMedia)
+    {
+        moz=true;
+        n.mozGetUserMedia({video: options, audio: false}, success, error);
+    }
+
+    document.getElementById("qrimg").style.opacity=0.2;
+    document.getElementById("webcamimg").style.opacity=1.0;
+
+    stype=1;
+    setTimeout(captureToCanvas, 500);
+}
+
+function setimg()
+{
+	//document.getElementById("result").innerHTML="";
+    if(stype==2)
+        return;
+    document.getElementById("outdiv").innerHTML = imghtml;
+    //document.getElementById("qrimg").src="qrimg.png";
+    //document.getElementById("webcamimg").src="webcam2.png";
+    document.getElementById("qrimg").style.opacity=1.0;
+    document.getElementById("webcamimg").style.opacity=0.2;
+    var qrfile = document.getElementById("qrfile");
+    qrfile.addEventListener("dragenter", dragenter, false);  
+    qrfile.addEventListener("dragover", dragover, false);  
+    qrfile.addEventListener("drop", drop, false);
+    stype=2;
 }
 
 function load()
@@ -151,76 +243,3 @@ function load()
         '<p id="mp1">try <a href="http://www.mozilla.com/firefox"><img src="firefox.png"/></a> or <a href="http://chrome.google.com"><img src="chrome_logo.gif"/></a> or <a href="http://www.opera.com"><img src="Opera-logo.png"/></a></p>';
 	}
 }
-
-var sourcevideo;
-
-function selectSourceVideo(){
-    //alert("ID: "+ MediaStreamTrack.id + "Tipo: "+ MediaStreamTrack.kind);
-    MediaStreamTrack.getSources(function (media_sources){
-        for (var i = 0; i < media_sources.length; i++) {
-            var media_source = media_sources[i];
-                //alert("Dentro de la funcion "+media_source.facing);
-                // if video device
-            if (media_source.facing === "environment") {
-                sourcevideo=media_source.id;
-                    //alert(sourcevideo);
-            }
-        }
-        //alert(sourcevideo);
-        //document.getElementById("source").innerHTML=sourcevideo;
-    });
-}
-
-function setwebcam()
-{
-    //alert("Tercero "+ sourcevideo);
-    if(stype==1)
-    {
-        setTimeout(captureToCanvas, 500);    
-        return;
-    }
-    var n=navigator;
-    document.getElementById("outdiv").innerHTML = vidhtml;
-    v=document.getElementById("v");
-    
-    if(n.getUserMedia)
-        n.getUserMedia({video: {optional:[{sourceId: sourcevideo}]}, audio: false }, success, error);
-    else
-    if(n.webkitGetUserMedia)
-    {
-        webkit=true;
-        n.webkitGetUserMedia({video: {optional:[{sourceId: sourcevideo}]}, audio: false }, success, error);
-    }
-    else
-    if(n.mozGetUserMedia)
-    {
-        moz=true;
-        n.mozGetUserMedia({video: {optional:[{sourceId: sourcevideo}]}, audio: false }, success, error);
-    }
-
-    //document.getElementById("qrimg").src="qrimg2.png";
-    //document.getElementById("webcamimg").src="webcam.png";
-    document.getElementById("qrimg").style.opacity=0.2;
-    document.getElementById("webcamimg").style.opacity=1.0;
-
-    stype=1;
-    setTimeout(captureToCanvas, 500);
-}
-function setimg()
-{
-	//document.getElementById("result").innerHTML="";
-    if(stype==2)
-        return;
-    document.getElementById("outdiv").innerHTML = imghtml;
-    //document.getElementById("qrimg").src="qrimg.png";
-    //document.getElementById("webcamimg").src="webcam2.png";
-    document.getElementById("qrimg").style.opacity=1.0;
-    document.getElementById("webcamimg").style.opacity=0.2;
-    var qrfile = document.getElementById("qrfile");
-    qrfile.addEventListener("dragenter", dragenter, false);  
-    qrfile.addEventListener("dragover", dragover, false);  
-    qrfile.addEventListener("drop", drop, false);
-    stype=2;
-}
-    
-    

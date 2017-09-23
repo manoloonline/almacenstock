@@ -8,6 +8,7 @@ and open the template in the editor.
     Author     : -
 */
 
+
 .ui-columntoggler{
     overflow-x:hidden;
 }
@@ -226,10 +227,10 @@ hr {
 }
 
  .ui-fileupload-content {
-    //display:none !important;
+    /*display:none !important;*/
  }
  
  ui-fileupload-buttonbar{
-    //border: 0px !important;
-    //background: transparent !important;
+    /*border: 0px !important;
+    //background: transparent !important;*/
  }

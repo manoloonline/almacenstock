@@ -7,7 +7,7 @@ and open the template in the editor.
     Created on : 23-nov-2015, 9:17:02
     Author     : -
 */
-//Del index
+/*Del index*/
 body {
     margin: 0px;
     padding: 0;
@@ -25,7 +25,7 @@ body {
     height: 350px;
 }
 
-//fin del propiedades del index
+/*fin del propiedades del index*/
 
 .ui-datatable-header{
     display: none !important

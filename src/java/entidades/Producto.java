@@ -28,11 +28,20 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "productos")
 @NamedQueries({
-    @NamedQuery(name = "Producto.findAll", query = "SELECT p FROM Producto p"),
-    @NamedQuery(name = "Producto.findByUser", query = "SELECT p FROM Producto p WHERE p.usuario=?1"),
-    @NamedQuery(name = "Producto.findByUserColor", query = "SELECT p FROM Producto p WHERE p.usuario=?1 AND p.colorRelacionado.id=?2"),
-    @NamedQuery(name = "Producto.findByUserSubcategoria", query = "SELECT p FROM Producto p WHERE p.usuario=?1 AND p.subcategoriaRelacionada.id=?2"),
-    @NamedQuery(name = "Producto.findByReferencia", query = "SELECT p FROM Producto p WHERE p.referencia=?1 AND p.usuario=?2")})
+    @NamedQuery(name = "Producto.findAll", 
+            query = "SELECT p FROM Producto p"),
+    @NamedQuery(name = "Producto.findByUser",
+            query = "SELECT p FROM Producto p"
+                     +" WHERE p.usuario=?1"),
+    @NamedQuery(name = "Producto.findByUserColor", 
+            query = "SELECT p FROM Producto p"
+                    +" WHERE p.usuario=?1 AND p.colorRelacionado.id=?2"),
+    @NamedQuery(name = "Producto.findByUserSubcategoria", 
+            query = "SELECT p FROM Producto p "
+                    +"WHERE p.usuario=?1 AND p.subcategoriaRelacionada.id=?2"),
+    @NamedQuery(name = "Producto.findByReferencia", 
+            query = "SELECT p FROM Producto p "+
+                    "WHERE p.referencia=?1 AND p.usuario=?2")})
     
 public class Producto implements Serializable {
     private static final long serialVersionUID = 1L;

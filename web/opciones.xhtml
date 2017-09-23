@@ -12,11 +12,8 @@
         <link rel="stylesheet" type="text/css" href="css/main.css"/>
     </h:head>
     <h:body id="raiz">
-        <h:form >
-        <ui:include src="cabecera.xhtml">
-            <!--<ui:param id="i" name="param.i" value="4"/>-->
-        </ui:include>
-        </h:form>
+      <ui:composition template="/template/principalLayout.xhtml">
+       <ui:define name="content">
         <center>            
         <h:form id="opcionesForm1">    
             <br/>
@@ -61,6 +58,8 @@
             
         </h:form>
         </center>
+       </ui:define>
+      </ui:composition>
     </h:body>
 </html>
 

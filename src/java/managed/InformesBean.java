@@ -55,6 +55,7 @@ public class InformesBean implements Serializable{
     private List<SelectItem> subcategorias;
     private List<SelectItem> categorias;
     private boolean mostrarCorrecta;
+    private double sumaTotalPrecios;
     
     
     @ManagedProperty("#{loginBean}")
@@ -92,8 +93,20 @@ public class InformesBean implements Serializable{
             listaProductoUltimoHistorico.add(new ProductoHistoricoBean(p,
                     gs.obtenerUltimoHistorico(p.getReferencia(), loginBean.getU().getId())));
         }
+        
+        for(ProductoHistoricoBean p : listaProductoUltimoHistorico){
+            sumaTotalPrecios += p.getPrecioTotalCompra();
+        }
     }
 
+    public double getSumaTotalPrecios() {
+        return sumaTotalPrecios;
+    }
+
+    public void setSumaTotalPrecios(double sumaTotalPrecios) {
+        this.sumaTotalPrecios = sumaTotalPrecios;
+    }
+    
     public List<SelectItem> getSubcategorias() {
         return subcategorias;
     }
@@ -375,6 +388,7 @@ public class InformesBean implements Serializable{
                 res = p.getHistorico().getCantidad();
                 break;
             }
+            sumaTotalPrecios += p.getPrecioTotalCompra();
         }
         return res;
     }

@@ -12,13 +12,13 @@
         <!--<script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
     --></h:head>
     <!---->
-    <h:body>
+    <h:body >
         <center>
         <br/>
         <br/>
         <br/>
         <h:form id="registroForm">
-            <p:panelGrid styleClass="authGrid" columns="3">
+            <p:panelGrid styleClass="authGrid" columns="3" >
                 <p:columnGroup><p:outputLabel for="email" value="Introduzca email con que se registró:" /> &nbsp; <p:inputText id="email" value="#{recordarBean.email}" required="true" validator="#{recordarBean.validateEmail}" validatorMessage="Email no registrado"></p:inputText></p:columnGroup><p:message for="email" display="tooltip" />
                 <h:outputText value="" /><div class="g-recaptcha" data-sitekey="6LcIlg4TAAAAANNwv7gl00jUfqQ7B9xKo_Vvwyns"></div><h:outputText value="" /><h:outputText value="" />
                 <p:messages id="messages" autoUpdate="true" closable="true" /><h:outputText value="" /><h:outputText value="" />

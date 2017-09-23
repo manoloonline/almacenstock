@@ -3,6 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:body>
@@ -13,25 +14,57 @@
                     <p:dashboard id="p" model="#{portadaBean.model}">
                         <p:ajax event="reorder" listener="#{portadaBean.handleReorder}" update="msgs" />
 
-                        <p:panel id="sports" header="Grafico">
-                            <h:outputText value="Imagen graficos" />
+                        <p:panel id="evolution" header="Evolución">
+                            <img src="images/grafico2.gif" width="100%" style="margin-bottom: 10px"/>
                         </p:panel>
 
-                        <p:panel id="finance" header="Productos">
-                            <h:outputText value="Productos sin stock" />
+                        <p:panel id="finance" header="Productos por debajo del mínimo">
+                            <table border="0" cellspacing="0" cellpadding="0" width="357" style="color:red">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <p>
+                                                FL-RECUBR. FK-F 20-6/20 WS
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p>
+                                                FL-RECUBR. FK-F 20-6/20 BR
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p>
+                                                COMPAS ABATIBLE FSR SL
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p>
+                                                BULON CLIP RETENEDOR
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p>
+                                                ESV 6-3-16 SL soporte de marco
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </p:panel>
 
-                        <p:panel id="lifestyle" header="Cosas varias">
-                            <h:outputText value="A definir"  />
+
+                        <p:panel id="images" header="Imagenes" >
+                            <img src="images/fotos.gif" width="100%" style="margin-bottom: 5px"/> 
                         </p:panel>
 
-                        <p:panel id="weather" header="Posibles imagenes">
-                            <h:outputText value="Imagenes contenidos" />
-                        </p:panel>
-
-                        <p:panel id="politics" header="Otra">
-                            <h:outputText value="Otro contenido" />
-                        </p:panel>
                     </p:dashboard>
                     <div style="clear:both" />        
                 </h:form>

@@ -33,13 +33,11 @@ public class PortadaBean implements Serializable {
         DashboardColumn column2 = new DefaultDashboardColumn();
         DashboardColumn column3 = new DefaultDashboardColumn();
          
-        column1.addWidget("sports");
+        column3.addWidget("evolution");
+        
+        column2.addWidget("images");
+         
         column1.addWidget("finance");
-         
-        column2.addWidget("lifestyle");
-        column2.addWidget("weather");
-         
-        column3.addWidget("politics");
  
         model.addColumn(column1);
         model.addColumn(column2);
